@@ -1,11 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Estilos from "../Estilos";
-
+import moment from "moment";
+import 'moment/locale/pt-br'
 
 export default props =>{
 
     const doneOrNot = props.dataCon != null ?{textDecorationLine: 'line-through'} : {}
+
+    const data = props.dataCon ? props.dataCon : props.dataEst
+    const dataFormatada = moment(data).locale('pt-br').format('ddd,  D [de] MMMM')
 
     return (
         <View style={styles.container}>
@@ -14,7 +18,7 @@ export default props =>{
             </View>
             <View>
                 <Text style={[styles.desc, doneOrNot ]}>{props.desc}</Text>
-                <Text>{props.dataEst + ""}</Text>
+                <Text style={styles.data}>{dataFormatada}</Text>
             </View>
         </View>
     )
@@ -47,18 +51,18 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     pendente:{
-        height: 25,
-        width:25,
-        borderRadius:13,
+        height: 20,
+        width:20,
+        borderRadius:10,
         borderWidth:1,
         borderColor: '#555',
     
     },
     concluido:{
-        height: 25,
-        width:25,
-        borderRadius:13,
-        borderColor: '#4d7031',
+        height: 20,
+        width:20,
+        borderRadius:10,
+        backgroundColor: '#555',
         alignItems: 'center',
         justifyContent: 'center',
     
@@ -67,5 +71,10 @@ const styles = StyleSheet.create({
         fontFamily: Estilos.fontFamily,
         color: Estilos.colors.mainText,
         fontSize: 15,
+    },
+    data:{
+        fontFamily: Estilos.fontFamily,
+        color: Estilos.colors.subText,
+        fontSize: 10,
     }
 })

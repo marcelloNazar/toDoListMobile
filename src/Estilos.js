@@ -3,6 +3,7 @@ export default {
     colors: {
         secundaria: '#FFF',
         mainText:'#222',
+        subText:'#555',
         
     }
 }
