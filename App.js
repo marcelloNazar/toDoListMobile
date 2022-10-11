@@ -1,6 +1,6 @@
 import { Component } from "react";
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform  } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform, Alert  } from "react-native";
 
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -45,12 +45,30 @@ export default class App extends Component {
     this.setState({tarefas})
   }
 
+
+    addTask = newTask => {
+      if(!newTask.desc || !newTask.desc.trim()){
+        Alert.alert('Dados Inválidos', 'Descrição não informada!')
+        return
+      }
+
+      const tarefas = [...this.state.tarefas]
+      tarefas.push({
+        id: Math.random(),
+        desc: newTask.desc,
+        dataEst: newTask.Date,
+        dataCon: null
+      })
+      this.setState({tarefas, mostrarModal: false })
+    }
+
     render(){
       const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
       return(
         <View style={styles.container} >
           <AddTarefa visible={this.state.mostrarModal}
-          onCancel={()=> this.setState({mostrarModal: false})}/>
+          onCancel={()=> this.setState({mostrarModal: false})}
+          onSave={this.addTask}/>
           <View style={styles.header}>
             <View style={styles.iconBar}>
               <TouchableOpacity  onPress={this.filtrarTarefas}>

@@ -1,8 +1,10 @@
 import React, {Component} from "react";
-import { Modal, View, StyleSheet, TouchableWithoutFeedback, Text, TouchableOpacity, TextInput, } from "react-native";
+import { Modal, View, StyleSheet, TouchableWithoutFeedback, Text, TouchableOpacity, TextInput, Platform } from "react-native";
 import Estilos from "../Estilos";
+import DateTimePicker from '@react-native-community/datetimepicker'
+import moment from "moment";
 
-const estadoInicial = { desc: ''}
+const estadoInicial = { desc: '', date: new Date(), showDatePicker: false}
 
 export default class AddTarefa extends Component{
 
@@ -10,6 +12,38 @@ export default class AddTarefa extends Component{
         ...estadoInicial
     }
 
+    save =()=>{
+        const newTask ={
+            desc: this.state.desc,
+            date: this.state.date
+        }
+        this.props.onSave && this.props.onSave(newTask)
+        this.setState({...estadoInicial})
+    }
+
+    getDateTime=()=>{
+        let datePicker = <DateTimePicker value={this.state.date} 
+        onChange={(_, date)=> this.setState({date, showDatePiker: false})} 
+        mode='date' /> 
+        
+        const dateString = moment(this.state.date).format('dddd, D [de] MMMM [de] YYYY')
+
+        if(Platform.OS === 'android'){
+            datePicker = (
+                <View>
+                    <TouchableOpacity onPress={()=> this.setState({showDatePicker: true})}>
+                        <Text style={styles.date}>
+                            {dateString}
+                        </Text>
+                    </TouchableOpacity>
+                    {this.state.showDatePicker && datePicker}
+                </View>
+            )
+        }
+        
+        
+        return datePicker
+    }
 
     render(){
         return(
@@ -28,11 +62,12 @@ export default class AddTarefa extends Component{
                     value={this.state.desc}
                     onChangeText={desc=> this.setState({desc})}
                     />
+                    {this.getDateTime()}
                     <View style={styles.botoes}>
                         <TouchableOpacity onPress={this.props.onCancel}>
                             <Text style={styles.botao}>Cancelar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={this.save}>
                             <Text style={styles.botao}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
@@ -81,4 +116,9 @@ const styles = StyleSheet.create({
         marginRight: 30,
         color: Estilos.colors.hoje
     },
+    date:{
+        fontFamily:Estilos.fontFamily,
+        fontSize:20,
+        marginLeft: 15,
+    }
 })
